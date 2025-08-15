@@ -994,6 +994,7 @@ function addAPISettingsButton() {
         '🟢 API Key: ตั้งค่าแล้ว' : 
         '🟡 API Key: ยังไม่ได้ตั้งค่า (ใช้งานแบบ Mock)';
     
+        
     settingsContainer.appendChild(settingsBtn);
     settingsContainer.appendChild(testBtn);
     settingsContainer.appendChild(statusDiv);
