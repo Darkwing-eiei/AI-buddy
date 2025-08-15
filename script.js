@@ -998,4 +998,48 @@ function addAPISettingsButton() {
     settingsContainer.appendChild(testBtn);
     settingsContainer.appendChild(statusDiv);
     header.appendChild(settingsContainer);
+    function handleImageUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+      
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const previewImg = document.getElementById('preview-img');
+          previewImg.src = e.target.result;
+          document.getElementById('image-preview').style.display = 'block';
+          document.getElementById('image-content').style.display = 'none';
+          document.getElementById('lesson-text').value = ''; // Clear existing text
+        };
+        reader.readAsDataURL(file);
+      }
+      async function extractTextFromImage() {
+        const previewImg = document.getElementById('preview-img');
+        const imageTextDiv = document.getElementById('image-text');
+        const lessonTextarea = document.getElementById('lesson-text');
+      
+        if (!previewImg.src) {
+          alert('กรุณาอัปโหลดรูปภาพก่อน');
+          return;
+        }
+      
+        imageTextDiv.innerHTML = '🤖 กำลังแปลงรูปภาพเป็นข้อความ...';
+        document.getElementById('image-content').style.display = 'block';
+      
+        try {
+          const { data: { text } } = await Tesseract.recognize(
+            previewImg.src,
+            'tha+eng', // ใช้ภาษาไทยและอังกฤษ
+            { logger: m => console.log(m) }
+          );
+      
+          imageTextDiv.innerHTML = text.replace(/\n/g, '<br>');
+          lessonTextarea.value = text;
+          alert('✅ แปลงข้อความจากรูปภาพสำเร็จแล้ว! คุณสามารถกด "สรุปเนื้อหาอัตโนมัติ" ได้เลย');
+      
+        } catch (error) {
+          console.error('OCR Error:', error);
+          imageTextDiv.innerHTML = '❌ เกิดข้อผิดพลาดในการแปลงข้อความ กรุณาลองใหม่อีกครั้ง';
+          alert('❌ ไม่สามารถแปลงข้อความจากรูปภาพได้');
+        }
+      }
 }
